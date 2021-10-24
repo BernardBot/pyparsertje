@@ -13,6 +13,6 @@ checksum = ("*" + integer)("checksum")
 comment = Regex(";.*")("comment")
 
 line = command + Optional(params) + Optional(checksum) + Optional(comment)
-
-ParserElement.setDefaultWhitespaceChars(" \t")
-gcode = ZeroOrMore(Group(line | comment) + Suppress(LineEnd()))
+newline = Suppress(LineEnd())
+gcode = ZeroOrMore(Group(line | comment) + newline)
+gcode.setWhitespaceChars(" \t")
