@@ -12,4 +12,7 @@ params = dictOf(letter, Optional(number))("params")
 checksum = ("*" + integer)("checksum")
 comment = Regex(";.*")("comment")
 
-gcode = command + Optional(params) + Optional(checksum) + Optional(comment)
+line = command + Optional(params) + Optional(checksum) + Optional(comment)
+
+ParserElement.setDefaultWhitespaceChars(" \t")
+gcode = ZeroOrMore(Group(line | comment) + Suppress(LineEnd()))
