@@ -9,10 +9,11 @@ import operator
 # speed
 ParserElement.enablePackrat()
 
-# global/local environment
+# global/local environment -> make a class?
 global_env = dict()
 local_env = dict()
 
+# model
 class Prog():
     def __init__(self, exps):
         self.exps = exps
@@ -108,6 +109,30 @@ class Asgn(Exp):
         global_env[self.var.exp] = self.val.eval()
         return global_env[self.var.exp]
 
+class WhileLoop(Exp):
+    def __init__(self, cond, body):
+        self.cond = cond
+        self.body = body
+
+    def __str__(self):
+        return "while " + str(self.cond) + " {\n" + indent(str(self.body)) + "\n}"
+
+    @classmethod
+    def fromParseAction(cls, s, loc, toks):
+        return cls(toks[1], toks[3])
+
+    def eval(self):
+        while self.cond.eval():
+            ret = self.body.eval()
+        return 0
+
+def indent(str_prog, tab="  ", newline="\n"):
+    ind = newline + tab
+    return tab + ind.join(str_prog.split(newline))
+
+# Parser
+prog = Forward()
+
 num = pyparsing_common.number
 identifier = pyparsing_common.identifier
 arith = infixNotation(num | identifier, [
@@ -119,20 +144,29 @@ arith = infixNotation(num | identifier, [
     ("-", 2, opAssoc.LEFT, BinOp.fromParseAction),
 ])
 asgn = identifier + Suppress("=") + arith
-exp = asgn | arith
-prog = ZeroOrMore(Group(exp))
+whileloop = "while" + arith + "{" + prog + "}"
+exp = whileloop | asgn | arith
+prog <<= ZeroOrMore(Group(exp))
 
 num.setParseAction(Num.fromParseAction)
 identifier.setParseAction(Identifier.fromParseAction)
 asgn.setParseAction(Asgn.fromParseAction)
+whileloop.setParseAction(WhileLoop.fromParseAction)
 exp.setParseAction(Exp.fromParseAction)
 prog.setParseAction(Prog.fromParseAction)
 
 if __name__ == "__main__":
     p = prog.parseString("""
+a = 1
+b = 1
 kaas = 10
-kaas = kaas * kaas
-ham = kaas - 33
+while kaas {
+  t = a
+  a = b
+  b = t + b
+  kaas = kaas - 1
+}
+a
 """)
     print('"""')
     print(p[0])
