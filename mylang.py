@@ -148,6 +148,7 @@ whileloop = "while" + arith + "{" + prog + "}"
 exp = whileloop | asgn | arith
 prog <<= ZeroOrMore(Group(exp))
 
+# TODO: automate this...
 num.setParseAction(Num.fromParseAction)
 identifier.setParseAction(Identifier.fromParseAction)
 asgn.setParseAction(Asgn.fromParseAction)
@@ -156,7 +157,8 @@ exp.setParseAction(Exp.fromParseAction)
 prog.setParseAction(Prog.fromParseAction)
 
 if __name__ == "__main__":
-    p = prog.parseString("""
+    prog_fib =\
+"""
 a = 1
 b = 1
 kaas = 10
@@ -165,10 +167,13 @@ while kaas {
   a = b
   b = t + b
   kaas = kaas - 1
+  while 0 {
+  }
 }
 a
-""")
+"""
+    ast = prog.parseString(prog_fib)[0]
     print('"""')
-    print(p[0])
+    print(ast)
     print('"""')
-    print(p[0].eval())
+    print(ast.eval())

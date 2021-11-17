@@ -1,0 +1,7 @@
+https://docs.python.org/3/library/ast.html
+https://github.com/python/cpython/blob/3.10/Lib/ast.py
+https://gist.github.com/thomasst/5399897
+https://sourceforge.net/p/pyparsing/mailman/pyparsing-users/thread/4E83BD2A.9000003%40cs.wisc.edu/#msg28157062
+https://raw.githubusercontent.com/python/cpython/main/Parser/parser.c
+
+https://tomassetti.me/parsing-in-python/
